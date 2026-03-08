@@ -1,13 +1,16 @@
 # Psychedelic Background Generator
 
 ## 概要
+
 ゲーム背景をリアルタイム生成するFlutterデモアプリ。Fragment Shaderでサイケデリックなマーブル模様を描画。
 
 ## 技術スタック
+
 - Flutter 3.29 / Dart 3.7
 - Fragment Shader (GLSL 4.60)
 
 ## アーキテクチャ
+
 ```
 Interface層 → ShaderConfig (DTO), BackgroundShader (契約)
 Manager層   → BackgroundManager (ライフサイクル・Ticker・uniform管理)
@@ -34,6 +37,7 @@ test/
 ```
 
 ## コマンド
+
 ```bash
 mise run dev                    # macOSデスクトップ実行
 mise run dev:ios                # iOSシミュレータ実行
@@ -50,6 +54,7 @@ mise run analyze                # 静的解析
 - `/implement` - TDD実装ガイド
 
 ## ルール
+
 - TDD必須 (RED→GREEN→REFACTOR)
 - 依存はピラミッド型 (上位→下位のみ)
 - 1ブランチ = 1機能
