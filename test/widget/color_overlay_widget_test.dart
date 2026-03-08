@@ -75,5 +75,27 @@ void main() {
       );
       expect(speedSlider, findsOneWidget);
     });
+
+    testWidgets('横画面でパネルが表示される', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(size: Size(800, 400)),
+            child: ShaderProvider(
+              manager: manager,
+              child: const Scaffold(
+                body: ColorOverlayWidget(),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byIcon(Icons.tune));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(Slider), findsWidgets);
+      expect(find.text('暖色'), findsOneWidget);
+    });
   });
 }

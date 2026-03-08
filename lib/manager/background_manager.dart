@@ -23,6 +23,12 @@ const int _uColor3B = 11;
 const int _uSpeed = 12;
 const int _uComplexity = 13;
 
+/// Uniform総数（最後のindex + 1）
+const int uniformCount = _uComplexity + 1;
+
+/// 1 uniform = 1 float = 4 bytes
+const int bytesPerFloat = 4;
+
 class BackgroundManager extends ChangeNotifier {
   // -- Config management --
   ShaderConfig _config;
