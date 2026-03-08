@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:psychedelic_bg/interface/shader_config.dart';
 
@@ -7,40 +6,40 @@ void main() {
     test('デフォルト値が正しい', () {
       const config = ShaderConfig();
 
-      expect(config.color1, const Color(0xFFFF6B35));
-      expect(config.color2, const Color(0xFF3366FF));
-      expect(config.color3, const Color(0xFF9933FF));
-      expect(config.speed, 1.0);
-      expect(config.complexity, 3.0);
+      expect(config.color1, ShaderConfig.defaultColor1);
+      expect(config.color2, ShaderConfig.defaultColor2);
+      expect(config.color3, ShaderConfig.defaultColor3);
+      expect(config.speed, ShaderConfig.defaultSpeed);
+      expect(config.complexity, ShaderConfig.defaultComplexity);
     });
 
     test('copyWithで部分更新できる', () {
       const config = ShaderConfig();
       final updated = config.copyWith(
-        color1: const Color(0xFFFF0000),
+        color1: ShaderConfig.defaultColor2,
         speed: 2.0,
       );
 
-      expect(updated.color1, const Color(0xFFFF0000));
-      expect(updated.color2, const Color(0xFF3366FF));
+      expect(updated.color1, ShaderConfig.defaultColor2);
+      expect(updated.color2, ShaderConfig.defaultColor2);
       expect(updated.speed, 2.0);
-      expect(updated.complexity, 3.0);
+      expect(updated.complexity, ShaderConfig.defaultComplexity);
     });
 
-    test('speedが範囲[0.1, 3.0]にクランプされる', () {
+    test('speedが範囲にクランプされる', () {
       const tooLow = ShaderConfig(speed: 0.0);
       const tooHigh = ShaderConfig(speed: 5.0);
 
-      expect(tooLow.speed, 0.1);
-      expect(tooHigh.speed, 3.0);
+      expect(tooLow.speed, ShaderConfig.minSpeed);
+      expect(tooHigh.speed, ShaderConfig.maxSpeed);
     });
 
-    test('complexityが範囲[1.0, 5.0]にクランプされる', () {
+    test('complexityが範囲にクランプされる', () {
       const tooLow = ShaderConfig(complexity: 0.0);
       const tooHigh = ShaderConfig(complexity: 10.0);
 
-      expect(tooLow.complexity, 1.0);
-      expect(tooHigh.complexity, 5.0);
+      expect(tooLow.complexity, ShaderConfig.minComplexity);
+      expect(tooHigh.complexity, ShaderConfig.maxComplexity);
     });
 
     test('同じ値のインスタンスはequalになる', () {

@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 import 'package:psychedelic_bg/interface/shader_config.dart';
-import 'package:psychedelic_bg/manager/background_manager.dart';
+import 'package:psychedelic_bg/provider/shader_provider.dart';
 
 class PsychedelicBackgroundWidget extends StatefulWidget {
   const PsychedelicBackgroundWidget({super.key});
@@ -16,39 +16,55 @@ class PsychedelicBackgroundWidget extends StatefulWidget {
 class _PsychedelicBackgroundWidgetState
     extends State<PsychedelicBackgroundWidget>
     with SingleTickerProviderStateMixin {
-  final BackgroundManager _manager = BackgroundManager();
+  bool _initialized = false;
+  // dispose時にcontextからProviderにアクセスできないためキャッシュ
+  VoidCallback? _cachedCleanup;
 
   @override
-  void initState() {
-    super.initState();
-    _manager.addListener(_onManagerUpdate);
-    _manager.startTicker(this);
-    _manager.load();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      _initialized = true;
+      ShaderProvider.addListener(context, _onUpdate);
+      ShaderProvider.startTicker(context, this);
+      ShaderProvider.loadShader(context);
+
+      // dispose用にクリーンアップ関数をキャプチャ
+      final manager = ShaderProvider.of(context);
+      _cachedCleanup = () {
+        manager.removeListener(_onUpdate);
+        manager.stopTicker();
+      };
+    }
   }
 
-  void _onManagerUpdate() {
+  void _onUpdate() {
     if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
-    _manager.removeListener(_onManagerUpdate);
-    _manager.dispose();
+    _cachedCleanup?.call();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isReady = ShaderProvider.isReady(context);
     return RepaintBoundary(
-      child: _manager.isReady
+      child: isReady
           ? SizedBox.expand(
               child: CustomPaint(
-                painter: _ShaderPainter(manager: _manager),
+                painter: _ShaderPainter(
+                  repaintNotifier: ShaderProvider.listenableOf(context),
+                  shaderFactory: (size) =>
+                      ShaderProvider.createShader(context, size),
+                ),
               ),
             )
           : SizedBox.expand(
               child: ColoredBox(
-                color: const ShaderConfig().color1,
+                color: ShaderConfig.defaultColor1,
               ),
             ),
     );
@@ -56,15 +72,18 @@ class _PsychedelicBackgroundWidgetState
 }
 
 class _ShaderPainter extends CustomPainter {
-  _ShaderPainter({required this.manager}) : super(repaint: manager);
+  _ShaderPainter({
+    required this.repaintNotifier,
+    required this.shaderFactory,
+  }) : super(repaint: repaintNotifier);
 
-  final BackgroundManager manager;
+  final Listenable repaintNotifier;
+  final ui.Shader? Function(ui.Size size) shaderFactory;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (!manager.isReady) return;
-
-    final shader = manager.createShader(ui.Size(size.width, size.height));
+    final shader = shaderFactory(ui.Size(size.width, size.height));
+    if (shader == null) return;
     final paint = Paint()..shader = shader;
     canvas.drawRect(Offset.zero & size, paint);
   }
