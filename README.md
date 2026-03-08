@@ -1,16 +1,51 @@
-# psychedelic_bg
+# Psychedelic Background Generator
 
-A new Flutter project.
+Fragment Shaderでサイケデリックなマーブル背景をリアルタイム生成するFlutterデモアプリ。
 
-## Getting Started
+## 機能
 
-This project is a starting point for a Flutter application.
+- GPU描画によるマーブルアニメーション (domain warping)
+- 3色カラー制御 (オレンジ・青・紫)
+- カラープリセット (暖色 / 寒色 / ネオン)
+- 速度・複雑度スライダー
+- バッテリー最適化 (バックグラウンド時Ticker停止、RepaintBoundary)
 
-A few resources to get you started if this is your first Flutter project:
+## セットアップ
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+mise install
+flutter pub get
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 実行
+
+```bash
+mise run dev          # macOSデスクトップ
+mise run dev:ios      # iOSシミュレータ
+mise run dev:chrome   # Chrome
+mise run dev:pick     # デバイス選択
+```
+
+VS Codeの場合は `F5` でlaunch.jsonから起動。
+
+## テスト・解析
+
+```bash
+mise run test         # 全テスト
+mise run analyze      # 静的解析
+```
+
+## アーキテクチャ
+
+```
+Interface層  → ShaderConfig (DTO), BackgroundShader (契約)
+Manager層    → BackgroundManager (ライフサイクル・Ticker・uniform管理)
+Provider層   → ShaderProvider (InheritedWidget)
+Widget層     → PsychedelicBackgroundWidget + ColorOverlayWidget
+Shader資産   → psychedelic_marble.frag
+```
+
+## 技術スタック
+
+- Flutter 3.29 / Dart 3.7
+- Fragment Shader (GLSL 4.60)
