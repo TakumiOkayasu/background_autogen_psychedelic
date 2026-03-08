@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:psychedelic_bg/interface/shader_config.dart';
+import 'package:psychedelic_bg/interface/shader_pattern.dart';
 import 'package:psychedelic_bg/manager/background_manager.dart'
     show uniformCount, bytesPerFloat;
 import 'package:psychedelic_bg/provider/shader_provider.dart';
-// Web: stub (N/A), Native: dart:io ProcessInfo
+// Web: performance.memory, Native: dart:io ProcessInfo
 import 'package:psychedelic_bg/widget/memory_info_stub.dart'
-    if (dart.library.io) 'package:psychedelic_bg/widget/memory_info_io.dart';
+    if (dart.library.io) 'package:psychedelic_bg/widget/memory_info_io.dart'
+    if (dart.library.js_interop) 'package:psychedelic_bg/widget/memory_info_web.dart';
 
 const double _panelMaxWidth = 320;
 const double _fontSize = 11;
@@ -121,6 +123,10 @@ class _DebugOverlayWidgetState extends State<DebugOverlayWidget> {
     return _Section(
       title: 'Parameters',
       children: [
+        _buildPatternDropdown(context, config),
+        const SizedBox(height: _itemSpacing),
+        _buildPresetDropdown(context),
+        const SizedBox(height: _itemSpacing),
         _buildColorRow('Color1', config.color1),
         _buildColorRow('Color2', config.color2),
         _buildColorRow('Color3', config.color3),
@@ -145,6 +151,106 @@ class _DebugOverlayWidgetState extends State<DebugOverlayWidget> {
           onChanged: (v) => ShaderProvider.updateConfig(
             context,
             config.copyWith(complexity: v),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPatternDropdown(BuildContext context, ShaderConfig config) {
+    return Row(
+      children: [
+        const SizedBox(
+          width: _sliderLabelWidth,
+          child: Text(
+            'Pattern',
+            style: TextStyle(
+              color: Colors.greenAccent,
+              fontSize: _fontSize,
+              fontFamily: 'monospace',
+            ),
+          ),
+        ),
+        Expanded(
+          child: DropdownButton<ShaderPattern>(
+            value: config.pattern,
+            isExpanded: true,
+            dropdownColor: Colors.black87,
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: _fontSize,
+              fontFamily: 'monospace',
+            ),
+            items: ShaderPattern.values
+                .map(
+                  (p) => DropdownMenuItem(
+                    value: p,
+                    child: Text(p.label),
+                  ),
+                )
+                .toList(),
+            onChanged: (p) {
+              if (p != null) {
+                ShaderProvider.updateConfig(
+                  context,
+                  config.copyWith(pattern: p),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPresetDropdown(BuildContext context) {
+    return Row(
+      children: [
+        const SizedBox(
+          width: _sliderLabelWidth,
+          child: Text(
+            'Preset',
+            style: TextStyle(
+              color: Colors.greenAccent,
+              fontSize: _fontSize,
+              fontFamily: 'monospace',
+            ),
+          ),
+        ),
+        Expanded(
+          child: DropdownButton<String>(
+            value: null,
+            hint: const Text(
+              'Select...',
+              style: TextStyle(
+                color: Colors.white38,
+                fontSize: _fontSize,
+                fontFamily: 'monospace',
+              ),
+            ),
+            isExpanded: true,
+            dropdownColor: Colors.black87,
+            style: const TextStyle(
+              color: Colors.white70,
+              fontSize: _fontSize,
+              fontFamily: 'monospace',
+            ),
+            items: ShaderConfig.presets.keys
+                .map(
+                  (name) => DropdownMenuItem(
+                    value: name,
+                    child: Text(name),
+                  ),
+                )
+                .toList(),
+            onChanged: (name) {
+              if (name != null) {
+                final preset = ShaderConfig.presets[name];
+                if (preset != null) {
+                  ShaderProvider.updateConfig(context, preset);
+                }
+              }
+            },
           ),
         ),
       ],
