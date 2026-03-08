@@ -22,6 +22,7 @@ mise exec -- flutter pub get
 ```bash
 mise run dev          # macOSデスクトップ
 mise run dev:ios      # iOSシミュレータ
+mise run dev:android  # Androidエミュレータ
 mise run dev:chrome   # Chrome
 mise run dev:pick     # デバイス選択
 ```

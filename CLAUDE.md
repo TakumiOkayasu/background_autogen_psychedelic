@@ -33,7 +33,8 @@ test/
 │   └── background_manager_test.dart
 └── widget/
     ├── psychedelic_background_widget_test.dart
-    └── color_overlay_widget_test.dart
+    ├── color_overlay_widget_test.dart
+    └── debug_overlay_widget_test.dart
 ```
 
 ## コマンド
@@ -41,6 +42,7 @@ test/
 ```bash
 mise run dev                    # macOSデスクトップ実行
 mise run dev:ios                # iOSシミュレータ実行
+mise run dev:android            # Androidエミュレータ実行
 mise run dev:chrome             # Chrome実行
 mise run dev:pick               # デバイス選択実行
 mise run test                   # テスト実行

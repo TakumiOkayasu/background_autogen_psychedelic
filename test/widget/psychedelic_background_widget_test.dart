@@ -42,5 +42,22 @@ void main() {
 
       expect(find.byType(ColoredBox), findsOneWidget);
     });
+
+    testWidgets('横画面でもSizedBox.expandで全体を占有する', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(size: Size(800, 400)),
+            child: ShaderProvider(
+              manager: manager,
+              child: const PsychedelicBackgroundWidget(),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(SizedBox), findsWidgets);
+      expect(find.byType(RepaintBoundary), findsWidgets);
+    });
   });
 }

@@ -15,6 +15,8 @@ const _presets = [
   _PresetEntry(label: 'ネオン', config: ShaderConfig.neon),
 ];
 
+const double _panelMaxWidth = 360;
+
 class ColorOverlayWidget extends StatefulWidget {
   const ColorOverlayWidget({super.key});
 
@@ -50,6 +52,7 @@ class _ColorOverlayWidgetState extends State<ColorOverlayWidget> {
     final config = ShaderProvider.configOf(context);
 
     return Container(
+      constraints: const BoxConstraints(maxWidth: _panelMaxWidth),
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

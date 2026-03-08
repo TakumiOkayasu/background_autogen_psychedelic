@@ -65,4 +65,7 @@ class ShaderProvider extends InheritedNotifier<BackgroundManager> {
   static void removeListener(BuildContext context, VoidCallback listener) {
     _read(context).removeListener(listener);
   }
+
+  static double elapsedSecondsOf(BuildContext context) =>
+      of(context).elapsedSeconds;
 }

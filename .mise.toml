@@ -13,6 +13,10 @@ sleep 3
 flutter run -d iPhone
 """
 
+[tasks."dev:android"]
+description = "Androidエミュレータで実行"
+run = "flutter run -d emulator"
+
 [tasks."dev:chrome"]
 description = "Chromeで実行"
 run = "flutter run -d chrome"
