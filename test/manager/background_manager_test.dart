@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:psychedelic_bg/interface/shader_config.dart';
 import 'package:psychedelic_bg/manager/background_manager.dart';
@@ -12,21 +11,22 @@ void main() {
       manager = BackgroundManager();
     });
 
+    tearDown(() {
+      manager.dispose();
+    });
+
     test('初期状態ではisReadyがfalse', () {
       expect(manager.isReady, isFalse);
-      manager.dispose();
     });
 
     test('デフォルトのconfigが設定されている', () {
       expect(manager.config, const ShaderConfig());
-      manager.dispose();
     });
 
     test('configを更新できる', () {
       const newConfig = ShaderConfig(speed: 2.0);
       manager.config = newConfig;
       expect(manager.config, newConfig);
-      manager.dispose();
     });
 
     test('config変更時にリスナーに通知される', () {
@@ -34,12 +34,10 @@ void main() {
       manager.addListener(() => notified = true);
       manager.config = const ShaderConfig(speed: 2.0);
       expect(notified, isTrue);
-      manager.dispose();
     });
 
     test('isPausedの初期値はfalse', () {
       expect(manager.isPaused, isFalse);
-      manager.dispose();
     });
 
     test('pause/resumeで状態が切り替わる', () {
@@ -47,12 +45,10 @@ void main() {
       expect(manager.isPaused, isTrue);
       manager.resume();
       expect(manager.isPaused, isFalse);
-      manager.dispose();
     });
 
     test('elapsedSecondsの初期値は0', () {
       expect(manager.elapsedSeconds, 0.0);
-      manager.dispose();
     });
 
     testWidgets('TickerでelapsedSecondsが更新される', (tester) async {
@@ -74,7 +70,7 @@ void main() {
 
       expect(manager.elapsedSeconds, greaterThan(0.0));
 
-      manager.dispose();
+      manager.stopTicker();
     });
 
     testWidgets('pause中はelapsedSecondsが更新されない', (tester) async {
@@ -98,7 +94,7 @@ void main() {
 
       expect(manager.elapsedSeconds, pausedTime);
 
-      manager.dispose();
+      manager.stopTicker();
     });
   });
 }

@@ -7,22 +7,53 @@ class ShaderConfig {
   final double speed;
   final double complexity;
 
+  static const double minSpeed = 0.1;
+  static const double maxSpeed = 3.0;
+  static const double defaultSpeed = 1.0;
+  static const double minComplexity = 1.0;
+  static const double maxComplexity = 5.0;
+  static const double defaultComplexity = 3.0;
+
+  static const Color defaultColor1 = Color(0xFFFF6B35);
+  static const Color defaultColor2 = Color(0xFF3366FF);
+  static const Color defaultColor3 = Color(0xFF9933FF);
+
   const ShaderConfig({
-    this.color1 = const Color(0xFFFF6B35),
-    this.color2 = const Color(0xFF3366FF),
-    this.color3 = const Color(0xFF9933FF),
-    double speed = 1.0,
-    double complexity = 3.0,
-  })  : speed = speed < 0.1
-            ? 0.1
-            : speed > 3.0
-                ? 3.0
+    this.color1 = defaultColor1,
+    this.color2 = defaultColor2,
+    this.color3 = defaultColor3,
+    double speed = defaultSpeed,
+    double complexity = defaultComplexity,
+  })  : speed = speed < minSpeed
+            ? minSpeed
+            : speed > maxSpeed
+                ? maxSpeed
                 : speed,
-        complexity = complexity < 1.0
-            ? 1.0
-            : complexity > 5.0
-                ? 5.0
+        complexity = complexity < minComplexity
+            ? minComplexity
+            : complexity > maxComplexity
+                ? maxComplexity
                 : complexity;
+
+  // -- Presets --
+
+  static const warm = ShaderConfig(
+    color1: Color(0xFFFF6B35),
+    color2: Color(0xFFFF3366),
+    color3: Color(0xFFFFAA00),
+  );
+
+  static const cool = ShaderConfig(
+    color1: Color(0xFF0066FF),
+    color2: Color(0xFF00CCCC),
+    color3: Color(0xFF6633FF),
+  );
+
+  static const neon = ShaderConfig(
+    color1: Color(0xFFFF00FF),
+    color2: Color(0xFF00FF66),
+    color3: Color(0xFFFFFF00),
+  );
 
   ShaderConfig copyWith({
     Color? color1,

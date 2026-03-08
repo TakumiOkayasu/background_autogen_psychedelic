@@ -3,37 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:psychedelic_bg/interface/shader_config.dart';
 import 'package:psychedelic_bg/provider/shader_provider.dart';
 
-class _Preset {
-  const _Preset({required this.name, required this.config});
-  final String name;
+class _PresetEntry {
+  const _PresetEntry({required this.label, required this.config});
+  final String label;
   final ShaderConfig config;
 }
 
 const _presets = [
-  _Preset(
-    name: '暖色',
-    config: ShaderConfig(
-      color1: Color(0xFFFF6B35),
-      color2: Color(0xFFFF3366),
-      color3: Color(0xFFFFAA00),
-    ),
-  ),
-  _Preset(
-    name: '寒色',
-    config: ShaderConfig(
-      color1: Color(0xFF0066FF),
-      color2: Color(0xFF00CCCC),
-      color3: Color(0xFF6633FF),
-    ),
-  ),
-  _Preset(
-    name: 'ネオン',
-    config: ShaderConfig(
-      color1: Color(0xFFFF00FF),
-      color2: Color(0xFF00FF66),
-      color3: Color(0xFFFFFF00),
-    ),
-  ),
+  _PresetEntry(label: '暖色', config: ShaderConfig.warm),
+  _PresetEntry(label: '寒色', config: ShaderConfig.cool),
+  _PresetEntry(label: 'ネオン', config: ShaderConfig.neon),
 ];
 
 class ColorOverlayWidget extends StatefulWidget {
@@ -68,8 +47,7 @@ class _ColorOverlayWidgetState extends State<ColorOverlayWidget> {
   }
 
   Widget _buildPanel(BuildContext context) {
-    final manager = ShaderProvider.of(context);
-    final config = manager.config;
+    final config = ShaderProvider.configOf(context);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -87,10 +65,13 @@ class _ColorOverlayWidgetState extends State<ColorOverlayWidget> {
             children: _presets
                 .map(
                   (p) => ActionChip(
-                    label: Text(p.name),
-                    onPressed: () => manager.config = p.config.copyWith(
-                      speed: config.speed,
-                      complexity: config.complexity,
+                    label: Text(p.label),
+                    onPressed: () => ShaderProvider.updateConfig(
+                      context,
+                      p.config.copyWith(
+                        speed: config.speed,
+                        complexity: config.complexity,
+                      ),
                     ),
                   ),
                 )
@@ -100,16 +81,22 @@ class _ColorOverlayWidgetState extends State<ColorOverlayWidget> {
           _buildSliderRow(
             label: '速度',
             value: config.speed,
-            min: 0.1,
-            max: 3.0,
-            onChanged: (v) => manager.config = config.copyWith(speed: v),
+            min: ShaderConfig.minSpeed,
+            max: ShaderConfig.maxSpeed,
+            onChanged: (v) => ShaderProvider.updateConfig(
+              context,
+              config.copyWith(speed: v),
+            ),
           ),
           _buildSliderRow(
             label: '複雑度',
             value: config.complexity,
-            min: 1.0,
-            max: 5.0,
-            onChanged: (v) => manager.config = config.copyWith(complexity: v),
+            min: ShaderConfig.minComplexity,
+            max: ShaderConfig.maxComplexity,
+            onChanged: (v) => ShaderProvider.updateConfig(
+              context,
+              config.copyWith(complexity: v),
+            ),
           ),
         ],
       ),
