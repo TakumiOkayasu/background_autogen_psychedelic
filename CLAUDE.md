@@ -17,9 +17,13 @@ Widget層    → PsychedelicBackgroundWidget + ColorOverlayWidget
 
 ## コマンド
 ```bash
-flutter test                    # テスト実行
-flutter analyze                 # 静的解析
-flutter run                     # 実機/シミュレータ実行
+mise run dev                    # macOSデスクトップ実行
+mise run dev:ios                # iOSシミュレータ実行
+mise run dev:chrome             # Chrome実行
+mise run dev:pick               # デバイス選択実行
+mise run test                   # テスト実行
+mise run analyze                # 静的解析
+mise run clean                  # キャッシュ削除
 ```
 
 ## ルール
