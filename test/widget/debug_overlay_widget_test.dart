@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:psychedelic_bg/interface/shader_config.dart';
+import 'package:psychedelic_bg/interface/shader_pattern.dart';
 import 'package:psychedelic_bg/manager/background_manager.dart';
 import 'package:psychedelic_bg/provider/shader_provider.dart';
 import 'package:psychedelic_bg/widget/debug_overlay_widget.dart';
@@ -126,6 +127,60 @@ void main() {
 
       expect(find.text('Memory'), findsOneWidget);
       expect(find.text('Parameters'), findsOneWidget);
+    });
+
+    testWidgets('パターンドロップダウンが表示される', (tester) async {
+      await tester.pumpWidget(buildTestWidget());
+      await tester.tap(find.byIcon(Icons.bug_report));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byType(DropdownButton<ShaderPattern>),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('プリセットドロップダウンが表示される', (tester) async {
+      await tester.pumpWidget(buildTestWidget());
+      await tester.tap(find.byIcon(Icons.bug_report));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byType(DropdownButton<String>),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('パターン変更でconfigが更新される', (tester) async {
+      await tester.pumpWidget(buildTestWidget());
+      await tester.tap(find.byIcon(Icons.bug_report));
+      await tester.pumpAndSettle();
+
+      // ドロップダウンをタップして開く
+      await tester.tap(find.byType(DropdownButton<ShaderPattern>));
+      await tester.pumpAndSettle();
+
+      // Vortexを選択
+      await tester.tap(find.text('Vortex').last);
+      await tester.pumpAndSettle();
+
+      expect(manager.config.pattern, ShaderPattern.vortex);
+    });
+
+    testWidgets('プリセット変更でconfigが更新される', (tester) async {
+      await tester.pumpWidget(buildTestWidget());
+      await tester.tap(find.byIcon(Icons.bug_report));
+      await tester.pumpAndSettle();
+
+      // プリセットドロップダウンをタップ
+      await tester.tap(find.byType(DropdownButton<String>));
+      await tester.pumpAndSettle();
+
+      // coolを選択
+      await tester.tap(find.text('cool').last);
+      await tester.pumpAndSettle();
+
+      expect(manager.config, ShaderConfig.cool);
     });
   });
 }

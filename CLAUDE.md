@@ -49,6 +49,17 @@ mise run test                   # テスト実行
 mise run analyze                # 静的解析
 ```
 
+## テスト実行時の注意
+
+Docker環境でテスト実行後にローカルで `mise run test` を実行すると、`.dart_tool/package_config.json` にDockerイメージ内のパス (`/sdks/flutter/`) がキャッシュされてコンパイルエラーになる場合がある。
+
+```bash
+# 対処法
+mise exec -- flutter clean && mise exec -- flutter pub get
+# その後
+mise run test
+```
+
 ## Available Commands
 
 - `/commit` - コミットメッセージ生成

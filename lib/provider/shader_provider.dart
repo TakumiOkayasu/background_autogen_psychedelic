@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/widgets.dart';
 
 import 'package:psychedelic_bg/interface/shader_config.dart';
+import 'package:psychedelic_bg/interface/shader_pattern.dart';
 import 'package:psychedelic_bg/manager/background_manager.dart';
 
 class ShaderProvider extends InheritedNotifier<BackgroundManager> {
@@ -33,6 +34,8 @@ class ShaderProvider extends InheritedNotifier<BackgroundManager> {
   // リビルド必要（値の読み取り）
   static bool isReady(BuildContext context) => of(context).isReady;
   static ShaderConfig configOf(BuildContext context) => of(context).config;
+  static ShaderPattern patternOf(BuildContext context) =>
+      of(context).config.pattern;
   static Listenable listenableOf(BuildContext context) => of(context);
 
   // リビルド不要（副作用のみ）

@@ -4,10 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:psychedelic_bg/interface/shader_config.dart';
+import 'package:psychedelic_bg/interface/shader_pattern.dart';
 
-const String _shaderAssetPath = 'shaders/psychedelic_marble.frag';
-
-// Uniform float indices (must match psychedelic_marble.frag layout)
+// Uniform float indices (must match all psychedelic_*.frag layouts)
 const int _uSizeX = 0;
 const int _uSizeY = 1;
 const int _uTime = 2;
@@ -34,8 +33,9 @@ class BackgroundManager extends ChangeNotifier {
   ShaderConfig _config;
 
   // -- Shader resource management --
-  ui.FragmentProgram? _program;
+  final Map<ShaderPattern, ui.FragmentProgram> _programs = {};
   ui.FragmentShader? _shader;
+  ShaderPattern? _activePattern;
 
   // -- Ticker / lifecycle management --
   bool _isPaused = false;
@@ -51,22 +51,42 @@ class BackgroundManager extends ChangeNotifier {
 
   set config(ShaderConfig value) {
     if (_config == value) return;
+    final patternChanged = _config.pattern != value.pattern;
     _config = value;
+    if (patternChanged) {
+      _shader?.dispose();
+      _shader = null;
+      _activePattern = null;
+    }
     notifyListeners();
   }
 
   // -- Shader resource management --
 
-  bool get isReady => _program != null;
+  bool get isReady => _programs.isNotEmpty;
 
   Future<void> load() async {
-    _program = await ui.FragmentProgram.fromAsset(_shaderAssetPath);
+    final results = await Future.wait(
+      ShaderPattern.values.map(
+        (p) => ui.FragmentProgram.fromAsset(p.assetPath),
+      ),
+    );
+    for (var i = 0; i < ShaderPattern.values.length; i++) {
+      _programs[ShaderPattern.values[i]] = results[i];
+    }
     notifyListeners();
   }
 
   ui.Shader createShader(ui.Size size) {
-    assert(_program != null, 'load() must be called before createShader()');
-    _shader ??= _program!.fragmentShader();
+    final pattern = _config.pattern;
+    assert(_programs.containsKey(pattern),
+        'load() must be called before createShader()');
+    if (_activePattern != pattern) {
+      _shader?.dispose();
+      _shader = null;
+      _activePattern = pattern;
+    }
+    _shader ??= _programs[pattern]!.fragmentShader();
     final shader = _shader!;
 
     shader.setFloat(_uSizeX, size.width);

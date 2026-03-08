@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:psychedelic_bg/interface/shader_config.dart';
+import 'package:psychedelic_bg/interface/shader_pattern.dart';
 
 void main() {
   group('ShaderConfig', () {
@@ -55,6 +56,33 @@ void main() {
       const b = ShaderConfig(speed: 2.0);
 
       expect(a, isNot(equals(b)));
+    });
+
+    test('デフォルトのpatternがmarble', () {
+      const config = ShaderConfig();
+      expect(config.pattern, ShaderPattern.marble);
+    });
+
+    test('patternをcopyWithで変更できる', () {
+      const config = ShaderConfig();
+      final updated = config.copyWith(pattern: ShaderPattern.vortex);
+      expect(updated.pattern, ShaderPattern.vortex);
+    });
+
+    test('pattern違いはequalにならない', () {
+      const a = ShaderConfig();
+      const b = ShaderConfig(pattern: ShaderPattern.plasma);
+      expect(a, isNot(equals(b)));
+    });
+
+    test('presetsマップが存在し空でない', () {
+      expect(ShaderConfig.presets.isNotEmpty, isTrue);
+    });
+
+    test('presetsにwarm/cool/neonが含まれる', () {
+      expect(ShaderConfig.presets.containsKey('warm'), isTrue);
+      expect(ShaderConfig.presets.containsKey('cool'), isTrue);
+      expect(ShaderConfig.presets.containsKey('neon'), isTrue);
     });
   });
 }

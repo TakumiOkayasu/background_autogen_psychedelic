@@ -59,3 +59,8 @@ flutter:
 
   shaders:
     - shaders/psychedelic_marble.frag
+    - shaders/psychedelic_vortex.frag
+    - shaders/psychedelic_ripple.frag
+    - shaders/psychedelic_fractal.frag
+    - shaders/psychedelic_plasma.frag
+    - shaders/psychedelic_sentai.frag
