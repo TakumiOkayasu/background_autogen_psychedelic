@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:psychedelic_bg/manager/background_manager.dart';
 import 'package:psychedelic_bg/provider/shader_provider.dart';
@@ -25,6 +26,10 @@ class _PsychedelicAppState extends State<PsychedelicApp>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
   }
 
   @override
