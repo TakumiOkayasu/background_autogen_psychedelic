@@ -84,5 +84,15 @@ void main() {
       expect(ShaderConfig.presets.containsKey('cool'), isTrue);
       expect(ShaderConfig.presets.containsKey('neon'), isTrue);
     });
+
+    test('全プリセットがデフォルトpattern(marble)を持つ', () {
+      for (final entry in ShaderConfig.presets.entries) {
+        expect(
+          entry.value.pattern,
+          ShaderPattern.marble,
+          reason: '${entry.key}プリセットがpatternを上書きしている',
+        );
+      }
+    });
   });
 }

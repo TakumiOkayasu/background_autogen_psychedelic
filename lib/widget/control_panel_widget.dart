@@ -88,7 +88,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
         children: [
           _buildPatternDropdown(context, config),
           const SizedBox(height: _Style.sectionSpacing),
-          _buildPresetChips(context),
+          _buildPresetChips(context, config.pattern),
           const SizedBox(height: _Style.sectionSpacing),
           _buildSliderRow(
             label: 'Speed',
@@ -134,7 +134,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
     );
   }
 
-  Widget _buildPresetChips(BuildContext context) {
+  Widget _buildPresetChips(BuildContext context, ShaderPattern currentPattern) {
     return Wrap(
       spacing: _Style.chipSpacing,
       runSpacing: _Style.chipRunSpacing,
@@ -142,8 +142,10 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
           .map(
             (entry) => ActionChip(
               label: Text(entry.key),
-              onPressed: () =>
-                  ShaderProvider.updateConfig(context, entry.value),
+              onPressed: () => ShaderProvider.updateConfig(
+                context,
+                entry.value.copyWith(pattern: currentPattern),
+              ),
             ),
           )
           .toList(),
