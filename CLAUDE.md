@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 技術スタック
 
-- Flutter 3.29 / Dart 3.7
+- Flutter 3.41 / Dart 3.11
 - Fragment Shader (GLSL 4.60) — 全6シェーダーが同一uniform layout (14 floats)
 
 ## コマンド
