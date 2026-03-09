@@ -18,7 +18,7 @@ void main() {
       manager.dispose();
     });
 
-    Widget buildTestWidget({Size size = const Size(400, 800)}) {
+    Widget buildTestWidget({Size size = const Size(800, 400)}) {
       return MaterialApp(
         home: MediaQuery(
           data: MediaQueryData(size: size),
@@ -120,6 +120,38 @@ void main() {
             w.max == ShaderConfig.maxComplexity,
       );
       expect(complexitySlider, findsOneWidget);
+    });
+
+    testWidgets('3つのカラーインジケータが表示される', (tester) async {
+      await tester.pumpWidget(buildTestWidget());
+      await tester.tap(find.byIcon(Icons.tune));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Color 1'), findsOneWidget);
+      expect(find.text('Color 2'), findsOneWidget);
+      expect(find.text('Color 3'), findsOneWidget);
+    });
+
+    testWidgets('カラーインジケータがconfigの色を反映する', (tester) async {
+      await tester.pumpWidget(buildTestWidget());
+      await tester.tap(find.byIcon(Icons.tune));
+      await tester.pumpAndSettle();
+
+      final indicators = tester.widgetList<Container>(
+        find.byWidgetPredicate(
+          (w) =>
+              w is Container &&
+              w.decoration is BoxDecoration &&
+              (w.decoration as BoxDecoration).shape == BoxShape.circle,
+        ),
+      );
+
+      final colors = indicators
+          .map((c) => (c.decoration as BoxDecoration?)?.color)
+          .toList();
+      expect(colors, contains(ShaderConfig.defaultColor1));
+      expect(colors, contains(ShaderConfig.defaultColor2));
+      expect(colors, contains(ShaderConfig.defaultColor3));
     });
 
     testWidgets('右下に配置される', (tester) async {
