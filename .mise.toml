@@ -1,5 +1,5 @@
 [tools]
-flutter = "3.29"
+flutter = "3.41"
 
 [tasks.dev]
 description = "macOSデスクトップで実行"

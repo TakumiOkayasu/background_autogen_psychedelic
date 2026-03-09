@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:psychedelic_bg/interface/shader_config.dart';
 import 'package:psychedelic_bg/manager/background_manager.dart';
 import 'package:psychedelic_bg/provider/shader_provider.dart';
 import 'package:psychedelic_bg/widget/psychedelic_background_widget.dart';
@@ -28,19 +29,44 @@ void main() {
     testWidgets('RepaintBoundaryでラップされている', (tester) async {
       await tester.pumpWidget(buildTestWidget());
 
-      expect(find.byType(RepaintBoundary), findsWidgets);
+      final backgroundFinder = find.byType(PsychedelicBackgroundWidget);
+      expect(
+        find.descendant(
+          of: backgroundFinder,
+          matching: find.byType(RepaintBoundary),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('SizedBox.expandで画面全体を占有する', (tester) async {
       await tester.pumpWidget(buildTestWidget());
 
-      expect(find.byType(SizedBox), findsWidgets);
+      final backgroundFinder = find.byType(PsychedelicBackgroundWidget);
+      expect(
+        find.descendant(
+          of: backgroundFinder,
+          matching: find.byType(SizedBox),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('シェーダー未ロード時はフォールバック色を表示', (tester) async {
       await tester.pumpWidget(buildTestWidget());
 
-      expect(find.byType(ColoredBox), findsOneWidget);
+      final backgroundFinder = find.byType(PsychedelicBackgroundWidget);
+      expect(
+        find.descendant(
+          of: backgroundFinder,
+          matching: find.byWidgetPredicate(
+            (widget) =>
+                widget is ColoredBox &&
+                widget.color == ShaderConfig.defaultColor1,
+          ),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('横画面でもSizedBox.expandで全体を占有する', (tester) async {
@@ -56,8 +82,21 @@ void main() {
         ),
       );
 
-      expect(find.byType(SizedBox), findsWidgets);
-      expect(find.byType(RepaintBoundary), findsWidgets);
+      final backgroundFinder = find.byType(PsychedelicBackgroundWidget);
+      expect(
+        find.descendant(
+          of: backgroundFinder,
+          matching: find.byType(SizedBox),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: backgroundFinder,
+          matching: find.byType(RepaintBoundary),
+        ),
+        findsOneWidget,
+      );
     });
   });
 }
