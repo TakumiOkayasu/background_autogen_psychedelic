@@ -60,7 +60,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (_isOpen) _buildPanel(context),
+            if (_isOpen) Flexible(child: _buildPanel(context)),
             Padding(
               padding: const EdgeInsets.all(_Style.buttonPadding),
               child: FloatingActionButton(
@@ -82,7 +82,8 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
       margin: const EdgeInsets.symmetric(horizontal: _Style.panelMargin),
       padding: const EdgeInsets.all(_Style.panelPadding),
       decoration: _Style.panelDecoration,
-      child: Column(
+      child: SingleChildScrollView(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -111,6 +112,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
             ),
           ),
         ],
+        ),
       ),
     );
   }
