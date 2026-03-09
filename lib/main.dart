@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:psychedelic_bg/manager/background_manager.dart';
 import 'package:psychedelic_bg/provider/shader_provider.dart';
-import 'package:psychedelic_bg/widget/color_overlay_widget.dart';
+import 'package:psychedelic_bg/widget/control_panel_widget.dart';
 import 'package:psychedelic_bg/widget/debug_overlay_widget.dart';
 import 'package:psychedelic_bg/widget/psychedelic_background_widget.dart';
 
@@ -59,7 +59,7 @@ class _PsychedelicAppState extends State<PsychedelicApp>
           body: Stack(
             children: [
               PsychedelicBackgroundWidget(),
-              ColorOverlayWidget(),
+              ControlPanelWidget(),
               DebugOverlayWidget(),
             ],
           ),
