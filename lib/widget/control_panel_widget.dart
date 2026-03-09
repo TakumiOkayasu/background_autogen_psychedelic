@@ -1,3 +1,4 @@
+import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 
 import 'package:psychedelic_bg/interface/shader_config.dart';
@@ -12,7 +13,8 @@ abstract final class _Style {
   static const Color sliderLabelColor = Colors.white;
 
   // -- Dimensions --
-  static const double panelMaxWidth = 360;
+  static const double panelMaxWidth = 560;
+  static const double columnSpacing = 16;
   static const double buttonPadding = 16;
   static const double panelMargin = 16;
   static const double panelPadding = 16;
@@ -23,6 +25,7 @@ abstract final class _Style {
   static const double dropdownFontSize = 14;
   static const double sliderLabelWidth = 80;
   static const double sliderFontSize = 12;
+  static const double colorIndicatorSize = 32;
 
   // -- Typography --
   static const TextStyle dropdownText = TextStyle(
@@ -60,7 +63,7 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            if (_isOpen) Flexible(child: _buildPanel(context)),
+            if (_isOpen) _buildPanel(context),
             Padding(
               padding: const EdgeInsets.all(_Style.buttonPadding),
               child: FloatingActionButton(
@@ -82,36 +85,86 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
       margin: const EdgeInsets.symmetric(horizontal: _Style.panelMargin),
       padding: const EdgeInsets.all(_Style.panelPadding),
       decoration: _Style.panelDecoration,
-      child: SingleChildScrollView(
-        child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildPatternDropdown(context, config),
-          const SizedBox(height: _Style.sectionSpacing),
-          _buildPresetChips(context, config.pattern),
-          const SizedBox(height: _Style.sectionSpacing),
-          _buildSliderRow(
-            label: 'Speed',
-            value: config.speed,
-            min: ShaderConfig.minSpeed,
-            max: ShaderConfig.maxSpeed,
-            onChanged: (v) => ShaderProvider.updateConfig(
-              context,
-              config.copyWith(speed: v),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left column: pattern, presets, colors
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildPatternDropdown(context, config),
+                  const SizedBox(height: _Style.sectionSpacing),
+                  _buildPresetChips(context, config.pattern),
+                  const SizedBox(height: _Style.sectionSpacing),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        child: _buildColorRow(
+                            'Color 1', config.color1, (c) {
+                          ShaderProvider.updateConfig(
+                            context,
+                            config.copyWith(color1: c),
+                          );
+                        }),
+                      ),
+                      Flexible(
+                        child: _buildColorRow(
+                            'Color 2', config.color2, (c) {
+                          ShaderProvider.updateConfig(
+                            context,
+                            config.copyWith(color2: c),
+                          );
+                        }),
+                      ),
+                      Flexible(
+                        child: _buildColorRow(
+                            'Color 3', config.color3, (c) {
+                          ShaderProvider.updateConfig(
+                            context,
+                            config.copyWith(color3: c),
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          _buildSliderRow(
-            label: 'Complexity',
-            value: config.complexity,
-            min: ShaderConfig.minComplexity,
-            max: ShaderConfig.maxComplexity,
-            onChanged: (v) => ShaderProvider.updateConfig(
-              context,
-              config.copyWith(complexity: v),
+            const SizedBox(width: _Style.columnSpacing),
+            // Right column: sliders
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildSliderRow(
+                    label: 'Speed',
+                    value: config.speed,
+                    min: ShaderConfig.minSpeed,
+                    max: ShaderConfig.maxSpeed,
+                    onChanged: (v) => ShaderProvider.updateConfig(
+                      context,
+                      config.copyWith(speed: v),
+                    ),
+                  ),
+                  _buildSliderRow(
+                    label: 'Complexity',
+                    value: config.complexity,
+                    min: ShaderConfig.minComplexity,
+                    max: ShaderConfig.maxComplexity,
+                    onChanged: (v) => ShaderProvider.updateConfig(
+                      context,
+                      config.copyWith(complexity: v),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
         ),
       ),
     );
@@ -151,6 +204,40 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
             ),
           )
           .toList(),
+    );
+  }
+
+  Widget _buildColorRow(
+    String label,
+    Color color,
+    ValueChanged<Color> onChanged,
+  ) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        GestureDetector(
+          onTap: () async {
+            final picked = await showColorPickerDialog(
+              context,
+              color,
+              pickersEnabled: const <ColorPickerType, bool>{
+                ColorPickerType.wheel: true,
+              },
+            );
+            onChanged(picked);
+          },
+          child: Container(
+            width: _Style.colorIndicatorSize,
+            height: _Style.colorIndicatorSize,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(label, style: _Style.sliderLabel),
+      ],
     );
   }
 
