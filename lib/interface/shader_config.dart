@@ -60,14 +60,12 @@ class ShaderConfig {
   );
 
   static const ocean = ShaderConfig(
-    pattern: ShaderPattern.ripple,
     color1: Color(0xFF006994),
     color2: Color(0xFF00CED1),
     color3: Color(0xFF40E0D0),
   );
 
   static const fire = ShaderConfig(
-    pattern: ShaderPattern.vortex,
     color1: Color(0xFFFF4500),
     color2: Color(0xFFFF8C00),
     color3: Color(0xFFFFD700),
@@ -75,7 +73,6 @@ class ShaderConfig {
   );
 
   static const pastel = ShaderConfig(
-    pattern: ShaderPattern.plasma,
     color1: Color(0xFFFFB3BA),
     color2: Color(0xFFBAE1FF),
     color3: Color(0xFFBAFFBA),
