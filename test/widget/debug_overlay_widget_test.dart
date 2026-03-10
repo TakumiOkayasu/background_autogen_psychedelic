@@ -93,6 +93,19 @@ void main() {
       expect(aligns, isNotEmpty);
     });
 
+    testWidgets('Uniform情報のfloat数とbyte数が表示される', (tester) async {
+      await tester.pumpWidget(buildTestWidget());
+      await tester.tap(find.byIcon(Icons.bug_report));
+      await tester.pumpAndSettle();
+
+      final expectedUniformCount = ShaderProvider.uniformCountValue;
+      final expectedBytes = expectedUniformCount * ShaderProvider.bytesPerFloatValue;
+      expect(
+        find.textContaining('$expectedUniformCount floats ($expectedBytes bytes)'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('パラメータ操作UIが存在しない', (tester) async {
       await tester.pumpWidget(buildTestWidget());
       await tester.tap(find.byIcon(Icons.bug_report));

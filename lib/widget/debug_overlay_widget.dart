@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:psychedelic_bg/manager/background_manager.dart'
-    show uniformCount, bytesPerFloat;
 import 'package:psychedelic_bg/provider/shader_provider.dart';
 import 'package:psychedelic_bg/widget/memory_info_stub.dart'
     if (dart.library.io) 'package:psychedelic_bg/widget/memory_info_io.dart'
@@ -131,16 +129,15 @@ class _DebugOverlayWidgetState extends State<DebugOverlayWidget> {
   }
 
   Widget _buildShaderSection(bool isReady, double elapsed) {
+    final count = ShaderProvider.uniformCountValue;
+    final bytes = count * ShaderProvider.bytesPerFloatValue;
+
     return _Section(
       title: 'Shader',
       children: [
         _InfoRow(label: 'Ready', value: isReady ? 'Yes' : 'No'),
         _InfoRow(label: 'Time', value: '${elapsed.toStringAsFixed(2)}s'),
-        _InfoRow(
-          label: 'Uniforms',
-          value:
-              '$uniformCount floats (${uniformCount * bytesPerFloat} bytes)',
-        ),
+        _InfoRow(label: 'Uniforms', value: '$count floats ($bytes bytes)'),
       ],
     );
   }
