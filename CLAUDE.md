@@ -4,12 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 概要
 
-ゲーム背景をリアルタイム生成するFlutterデモアプリ。Fragment Shaderで6種のサイケデリックパターンを描画し、デバッグオーバーレイからリアルタイムに切替可能。
+ゲーム背景をリアルタイム生成するFlutterデモアプリ。Fragment Shaderで12種のサイケデリックパターンを描画し、デバッグオーバーレイからリアルタイムに切替可能。
 
 ## 技術スタック
 
 - Flutter 3.41 / Dart 3.11
-- Fragment Shader (GLSL 4.60) — 全6シェーダーが同一uniform layout (14 floats)
+- Fragment Shader (GLSL 4.60) — 全12シェーダーが同一uniform layout (16 floats)
 
 ## コマンド
 
@@ -50,7 +50,7 @@ Widget層    → PsychedelicBackgroundWidget, ColorOverlayWidget, DebugOverlayWi
 
 ### データフロー
 
-1. `BackgroundManager.load()` で全6シェーダーを並列ロード → `Map<ShaderPattern, FragmentProgram>` にキャッシュ
+1. `BackgroundManager.load()` で全12シェーダーを並列ロード → `Map<ShaderPattern, FragmentProgram>` にキャッシュ
 2. `ShaderConfig.pattern` でアクティブパターンを指定 → `createShader()` が対応プログラムからシェーダー生成
 3. `ShaderProvider` がWidget層に `configOf` / `patternOf` / `updateConfig` を公開
 4. `DebugOverlayWidget` のドロップダウンでパターン・プリセットをリアルタイム切替
@@ -60,11 +60,17 @@ Widget層    → PsychedelicBackgroundWidget, ColorOverlayWidget, DebugOverlayWi
 | パターン | アルゴリズム |
 |---------|------------|
 | marble | domain warping |
-| vortex | 極座標ねじり |
-| ripple | 同心円波合成 |
-| fractal | 反復座標変換 |
-| plasma | sin波加算合成 |
-| sentai | 放射状セグメント |
+| vortex | 多特異点inversion mapping |
+| ripple | domain-warped コースティクス干渉 |
+| fractal | 反復座標変換 (abs/dot inversion) |
+| plasma | 擬似Voronoi セル分裂 |
+| sentai | 極座標折り返し + fractal反復 |
+| liquid | 8層domain warping |
+| kaleidoscope | 万華鏡折り返し + inversion |
+| explosion | 多中心fractal burst |
+| turbulence | fBm noise-on-noise + 油膜干渉 |
+| acid | フィードバックwarp + HSV cycling + 色収差 |
+| warp | LiquidGlass多段レンズ屈折 |
 
 ### メモリ表示 (conditional import)
 
