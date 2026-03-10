@@ -15,6 +15,10 @@ void main() {
       manager.dispose();
     });
 
+    test('uniformCountが16', () {
+      expect(uniformCount, 16);
+    });
+
     test('初期状態ではisReadyがfalse', () {
       expect(manager.isReady, isFalse);
     });
