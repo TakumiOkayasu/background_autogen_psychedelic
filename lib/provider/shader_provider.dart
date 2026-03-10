@@ -31,6 +31,10 @@ class ShaderProvider extends InheritedNotifier<BackgroundManager> {
 
   // -- Widget層向けAPI (段階飛ばし防止) --
 
+  // リビルド不要（定数値）
+  static int get uniformCountValue => uniformCount;
+  static int get bytesPerFloatValue => bytesPerFloat;
+
   // リビルド必要（値の読み取り）
   static bool isReady(BuildContext context) => of(context).isReady;
   static ShaderConfig configOf(BuildContext context) => of(context).config;
