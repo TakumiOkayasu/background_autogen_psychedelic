@@ -11,17 +11,17 @@ run = "flutter emulators"
 
 [tasks."emu:ios"]
 description = "iOSシミュレータ起動"
-run = """
+run = '''
 open -a Simulator
 xcrun simctl boot booted 2>/dev/null || true
 echo "iOSシミュレータを起動しました"
-"""
+'''
 
 [tasks."emu:android"]
 description = "Androidエミュレータ起動"
-run = """
+run = '''
 if ! command -v emulator &>/dev/null; then
-  echo "Error: emulatorコマンドが見つかりません。\$ANDROID_HOME/emulator をPATHに追加してください。"
+  echo "Error: emulatorコマンドが見つかりません。$ANDROID_HOME/emulator をPATHに追加してください。"
   exit 1
 fi
 AVD="${1:-$(emulator -list-avds | head -1)}"
@@ -31,18 +31,18 @@ if [ -z "$AVD" ]; then
 fi
 echo "起動中: $AVD"
 emulator -avd "$AVD" &
-"""
+'''
 
 [tasks."dev:ios"]
 description = "iOSシミュレータで実行"
 depends = ["emu:ios"]
-run = """
+run = '''
 echo "シミュレータのブート待機中..."
 while ! xcrun simctl list devices booted 2>/dev/null | grep -q "Booted"; do
   sleep 1
 done
 flutter run -d iPhone
-"""
+'''
 
 [tasks."dev:android"]
 description = "Androidエミュレータで実行"

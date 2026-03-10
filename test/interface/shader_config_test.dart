@@ -85,14 +85,118 @@ void main() {
       expect(ShaderConfig.presets.containsKey('neon'), isTrue);
     });
 
-    test('全プリセットがデフォルトpattern(marble)を持つ', () {
+    test('全プリセットが有効なShaderPatternを持つ', () {
       for (final entry in ShaderConfig.presets.entries) {
         expect(
-          entry.value.pattern,
-          ShaderPattern.marble,
-          reason: '${entry.key}プリセットがpatternを上書きしている',
+          ShaderPattern.values.contains(entry.value.pattern),
+          isTrue,
+          reason: '${entry.key}プリセットが無効なpatternを持っている',
         );
       }
+    });
+
+    group('ShaderPattern enum', () {
+      test('12パターンが定義されている', () {
+        expect(ShaderPattern.values.length, 12);
+      });
+
+      test('全パターンのassetPathが規則に従う', () {
+        for (final p in ShaderPattern.values) {
+          expect(p.assetPath, 'shaders/psychedelic_${p.name}.frag');
+        }
+      });
+
+      test('全パターンのlabelがnameの先頭大文字', () {
+        for (final p in ShaderPattern.values) {
+          expect(p.label, p.name[0].toUpperCase() + p.name.substring(1));
+        }
+      });
+    });
+
+    group('minoMusicプリセット', () {
+      test('presetsにminoMusicが含まれる', () {
+        expect(ShaderConfig.presets.containsKey('minoMusic'), isTrue);
+      });
+
+      test('minoMusicプリセットのpatternがliquid', () {
+        expect(ShaderConfig.presets['minoMusic']!.pattern,
+            ShaderPattern.liquid);
+      });
+    });
+
+    group('brightness', () {
+      test('デフォルト値が1.0', () {
+        const config = ShaderConfig();
+        expect(config.brightness, 1.0);
+      });
+
+      test('範囲にクランプされる', () {
+        const tooLow = ShaderConfig(brightness: -0.5);
+        const tooHigh = ShaderConfig(brightness: 2.0);
+
+        expect(tooLow.brightness, ShaderConfig.minBrightness);
+        expect(tooHigh.brightness, ShaderConfig.maxBrightness);
+      });
+
+      test('copyWithで変更できる', () {
+        const config = ShaderConfig();
+        final updated = config.copyWith(brightness: 0.5);
+        expect(updated.brightness, 0.5);
+      });
+
+      test('brightness違いはequalにならない', () {
+        const a = ShaderConfig();
+        const b = ShaderConfig(brightness: 0.5);
+        expect(a, isNot(equals(b)));
+      });
+    });
+
+    group('noiseIntensity', () {
+      test('デフォルト値が0.0', () {
+        const config = ShaderConfig();
+        expect(config.noiseIntensity, 0.0);
+      });
+
+      test('範囲にクランプされる', () {
+        const tooLow = ShaderConfig(noiseIntensity: -0.5);
+        const tooHigh = ShaderConfig(noiseIntensity: 2.0);
+
+        expect(tooLow.noiseIntensity, ShaderConfig.minNoiseIntensity);
+        expect(tooHigh.noiseIntensity, ShaderConfig.maxNoiseIntensity);
+      });
+
+      test('copyWithで変更できる', () {
+        const config = ShaderConfig();
+        final updated = config.copyWith(noiseIntensity: 0.7);
+        expect(updated.noiseIntensity, 0.7);
+      });
+
+      test('noiseIntensity違いはequalにならない', () {
+        const a = ShaderConfig();
+        const b = ShaderConfig(noiseIntensity: 0.5);
+        expect(a, isNot(equals(b)));
+      });
+    });
+
+    group('dark/ultraQプリセット', () {
+      test('presetsにdarkが含まれる', () {
+        expect(ShaderConfig.presets.containsKey('dark'), isTrue);
+      });
+
+      test('presetsにultraQが含まれる', () {
+        expect(ShaderConfig.presets.containsKey('ultraQ'), isTrue);
+      });
+
+      test('darkプリセットのbrightnessが1.0未満', () {
+        expect(ShaderConfig.presets['dark']!.brightness, lessThan(1.0));
+      });
+
+      test('ultraQプリセットのnoiseIntensityが0.0より大きい', () {
+        expect(
+          ShaderConfig.presets['ultraQ']!.noiseIntensity,
+          greaterThan(0.0),
+        );
+      });
     });
   });
 }

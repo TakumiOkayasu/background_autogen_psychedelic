@@ -21,9 +21,11 @@ const int _uColor3G = 10;
 const int _uColor3B = 11;
 const int _uSpeed = 12;
 const int _uComplexity = 13;
+const int _uBrightness = 14;
+const int _uNoiseIntensity = 15;
 
 /// Uniform総数（最後のindex + 1）
-const int uniformCount = _uComplexity + 1;
+const int uniformCount = _uNoiseIntensity + 1;
 
 /// 1 uniform = 1 float = 4 bytes
 const int bytesPerFloat = 4;
@@ -103,6 +105,8 @@ class BackgroundManager extends ChangeNotifier {
     shader.setFloat(_uColor3B, _config.color3.b);
     shader.setFloat(_uSpeed, _config.speed);
     shader.setFloat(_uComplexity, _config.complexity);
+    shader.setFloat(_uBrightness, _config.brightness);
+    shader.setFloat(_uNoiseIntensity, _config.noiseIntensity);
 
     return shader;
   }

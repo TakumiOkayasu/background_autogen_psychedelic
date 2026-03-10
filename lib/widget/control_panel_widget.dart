@@ -161,6 +161,26 @@ class _ControlPanelWidgetState extends State<ControlPanelWidget> {
                       config.copyWith(complexity: v),
                     ),
                   ),
+                  _buildSliderRow(
+                    label: 'Brightness',
+                    value: config.brightness,
+                    min: ShaderConfig.minBrightness,
+                    max: ShaderConfig.maxBrightness,
+                    onChanged: (v) => ShaderProvider.updateConfig(
+                      context,
+                      config.copyWith(brightness: v),
+                    ),
+                  ),
+                  _buildSliderRow(
+                    label: 'Noise',
+                    value: config.noiseIntensity,
+                    min: ShaderConfig.minNoiseIntensity,
+                    max: ShaderConfig.maxNoiseIntensity,
+                    onChanged: (v) => ShaderProvider.updateConfig(
+                      context,
+                      config.copyWith(noiseIntensity: v),
+                    ),
+                  ),
                 ],
               ),
             ),

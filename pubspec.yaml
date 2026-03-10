@@ -65,3 +65,9 @@ flutter:
     - shaders/psychedelic_fractal.frag
     - shaders/psychedelic_plasma.frag
     - shaders/psychedelic_sentai.frag
+    - shaders/psychedelic_liquid.frag
+    - shaders/psychedelic_kaleidoscope.frag
+    - shaders/psychedelic_explosion.frag
+    - shaders/psychedelic_turbulence.frag
+    - shaders/psychedelic_acid.frag
+    - shaders/psychedelic_warp.frag
