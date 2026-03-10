@@ -21,6 +21,9 @@ mise run dev:chrome             # Chrome実行
 mise run dev:pick               # デバイス選択実行
 mise run test                   # テスト実行
 mise run analyze                # 静的解析
+mise run emu                    # エミュレータ一覧表示
+mise run emu:ios                # iOSシミュレータ起動
+mise run emu:android            # Androidエミュレータ起動
 ```
 
 ## テスト実行時の注意
